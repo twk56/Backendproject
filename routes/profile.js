@@ -60,7 +60,7 @@ router.put("/profile", verifyToken, (req, res) => {
   });
 });
 
-// GET /api/profile (ดึงข้อมูลโปรไฟล์)
+
 router.get("/profile", verifyToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("-password");

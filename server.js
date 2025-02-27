@@ -49,8 +49,5 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api", authRoutes);
 app.use("/api", profileRoutes);
 
-
-
-
 const PORT = process.env.PORT || 4999;
 app.listen(4999, () => console.log(`🚀 Server running on port ${PORT}`));

@@ -14,3 +14,4 @@ exports.validateRegister = (req, res, next) => {
   }
   next();
 };
+
