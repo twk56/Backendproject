@@ -33,10 +33,10 @@ app.use(cors({
 app.use(express.json());
 app.use(helmet());
 
-// เส้นทางสำหรับอัพโหลด
+
 app.use("/api", uploadRoutes);
 
-// เส้นทางสำหรับ admin
+
 app.use("/api/admin", adminRoutes);
 
 app.use((req, res, next) => {
@@ -44,10 +44,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// เส้นทางสำหรับการเข้าถึงไฟล์ในโฟลเดอร์ uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// เส้นทางสำหรับ authentication และ profile
 app.use("/api", authRoutes);
 app.use("/api", profileRoutes);
 
