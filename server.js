@@ -10,6 +10,7 @@ const uploadRoutes = require("./routes/upload");
 const adminRoutes = require("./routes/admin");
 const path = require("path");
 const app = express();
+const bookingRoutes = require("./routes/bookings");
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
@@ -33,10 +34,8 @@ app.use(cors({
 app.use(express.json());
 app.use(helmet());
 
-
+app.use("/api", bookingRoutes);
 app.use("/api", uploadRoutes);
-
-
 app.use("/api/admin", adminRoutes);
 
 app.use((req, res, next) => {
