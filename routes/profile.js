@@ -8,15 +8,15 @@ const User = require("../models/User");
 
 const router = express.Router();
 
-// ตั้งค่า storage สำหรับ multer
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads");
   },
   filename: (req, file, cb) => {
-    // ใช้ userId จาก token มาเป็นชื่อไฟล์
+
     try {
-      const userId = req.user.userId; // มาจาก verifyToken
+      const userId = req.user.userId;
       cb(null, userId + path.extname(file.originalname));
     } catch (error) {
       cb(new Error("Token ไม่ถูกต้อง"), false);
@@ -26,7 +26,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// PUT /api/profile (อัปเดตรูปโปรไฟล์)
 router.put("/profile", verifyToken, (req, res) => {
   upload.single("profileImage")(req, res, async (err) => {
     if (err) {
@@ -39,7 +38,6 @@ router.put("/profile", verifyToken, (req, res) => {
         return res.status(404).json({ error: "ไม่พบผู้ใช้" });
       }
 
-      // ลบรูปเก่า (ถ้าไม่ใช่ default)
       if (user.profileImage && user.profileImage !== "/uploads/default.png") {
         const oldImagePath = path.join(__dirname, "..", user.profileImage);
         if (fs.existsSync(oldImagePath)) {
@@ -63,7 +61,8 @@ router.put("/profile", verifyToken, (req, res) => {
 
 router.get("/profile", verifyToken, async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select("-password");
+    const user = await User.findById(req.user.id).select("-password");
+    console.log(req.user.id);
     if (!user) {
       return res.status(404).json({ error: "ไม่พบผู้ใช้" });
     }

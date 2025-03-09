@@ -9,12 +9,11 @@ exports.verifyToken = (req, res, next) => {
   const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (!decoded.id) {
+    if (!decoded.userId) {
       return res.status(401).json({ error: "Token ไม่ถูกต้อง: ไม่มีข้อมูลผู้ใช้" });
     }
 
-    req.user = { id: decoded.id, role: decoded.role }; 
+    req.user = { id: decoded.userId, role: decoded.role }; 
     next();
   } catch (error) {
     console.error("🔴 Error in verifyToken:", error.message);

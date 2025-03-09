@@ -29,7 +29,7 @@ router.post('/bookings', verifyToken, async (req, res) => {
       room,
       startTime: start,
       endTime: end,
-      user: new mongoose.Types.ObjectId(req.user.id), // ✅ แปลง id เป็น ObjectId
+      user: new mongoose.Types.ObjectId(req.user.id),
     });
 
     await booking.save();
@@ -42,7 +42,8 @@ router.post('/bookings', verifyToken, async (req, res) => {
 
 router.get('/bookings', async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({ startTime: 1 });
+    const bookings = await Booking.find().populate('user', 'studentId').sort({ startTime: 1 });
+    console.log(bookings);
     res.json(bookings);
   } catch (error) {
     console.error('Error in GET /bookings:', error.message);
@@ -53,6 +54,9 @@ router.get('/bookings', async (req, res) => {
 router.delete("/bookings/:id", verifyToken, async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
+    console.log("🔍 กำลังลบการจอง ID:", req.params.id);
+    console.log("🛡️ ข้อมูลผู้ใช้ที่ร้องขอ:", req.user);
+
     if (!booking) {
       return res.status(404).json({ message: "ไม่พบการจองนี้" });
     }
@@ -61,7 +65,7 @@ router.delete("/bookings/:id", verifyToken, async (req, res) => {
       return res.status(403).json({ message: "คุณไม่มีสิทธิ์ยกเลิกการจองนี้" });
     }
 
-    await booking.remove();
+    await Booking.findByIdAndDelete(req.params.id);
     res.json({ message: "ยกเลิกการจองสำเร็จ" });
   } catch (error) {
     console.error("🔴 Error in DELETE /bookings/:id:", error.message);
