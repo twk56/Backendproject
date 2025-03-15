@@ -1,9 +1,11 @@
 const Joi = require("joi");
 
-// สร้าง Schema สำหรับ validate
 const registerSchema = Joi.object({
+  fullName: Joi.string().required(),
   email: Joi.string().email().required(),
-  studentId: Joi.string().required(),
+  studentId: Joi.string().pattern(/^\d{12}-\d$/).required().messages({
+    "string.pattern.base": "รหัสนักศึกษาต้องเป็น 12 หลักตามด้วยขีดและ 1 หลัก",
+  }),
   password: Joi.string().min(6).required(),
 });
 
@@ -14,4 +16,3 @@ exports.validateRegister = (req, res, next) => {
   }
   next();
 };
-

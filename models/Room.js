@@ -1,12 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const roomSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  status: { type: String, required: true, enum: ['available', 'unavailable'] },
-  image: { type: String, default: 'default.png' },
-});
+const RoomSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  status: { type: String, enum: ['available', 'unavailable'], default: 'available' },
+  image: { type: String, default: '/uploads/default-room.png' },
+}, { timestamps: true });
 
-const Room = mongoose.model("Room", roomSchema);
-
-module.exports = Room;
-
+module.exports = mongoose.model('Room', RoomSchema);
