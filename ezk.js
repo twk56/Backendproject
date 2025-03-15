@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 
-const plainPassword = "twk-99";
-const saltRounds = 10;
+// const plainPassword = "";
+// const saltRounds = 10;
 
 bcrypt.hash(plainPassword, saltRounds, (err, hash) => {
   if (err) {

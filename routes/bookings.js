@@ -44,7 +44,7 @@ router.post('/bookings', verifyToken, async (req, res) => {
       });
     }
 
-    console.log("📝 Creating new booking with user ID:", req.user.userId);
+    console.log("Creating new booking with user ID:", req.user.userId);
 
     const booking = new Booking({
       room,
@@ -56,7 +56,7 @@ router.post('/bookings', verifyToken, async (req, res) => {
     await booking.save();
     return res.status(201).json({ message: 'จองห้องสำเร็จ', booking });
   } catch (error) {
-    console.error('🔴 Error in POST /bookings:', error.message);
+    console.error('Error in POST /bookings:', error.message);
     res.status(500).json({ message: 'เกิดข้อผิดพลาด', error: error.message });
   }
 });
@@ -64,7 +64,7 @@ router.post('/bookings', verifyToken, async (req, res) => {
 router.get('/bookings', async (req, res) => {
   try {
     const bookings = await Booking.find()
-      .populate('user', 'fullName studentId') // เปลี่ยนจาก 'studentId' เป็น 'fullName studentId'
+      .populate('user', 'fullName studentId')
       .sort({ startTime: 1 });
     console.log(bookings);
     res.json(bookings);
