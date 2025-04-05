@@ -8,7 +8,8 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     profileImage: { type: String, default: "/uploads/default.png" },
     role: { type: String, enum: ["user", "admin"], default: "user" },
-    lastLogin: { type: Date, default: null }
+    lastLogin: { type: Date, default: null },
+    isApproved: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

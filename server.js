@@ -11,6 +11,7 @@ const adminRoutes = require("./routes/admin");
 const path = require("path");
 const app = express();
 const bookingRoutes = require("./routes/bookings");
+const { startCronJobs } = require("./cron/crontime");
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, 
@@ -22,6 +23,9 @@ const limiter = rateLimit({
 app.use(limiter);
 
 connectDB();
+
+startCronJobs();
+
 
 app.use(cors({
   origin: 'http://localhost:5173',
@@ -48,5 +52,5 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api", authRoutes);
 app.use("/api", profileRoutes);
 
-const PORT = process.env.PORT || 4999;
-app.listen(4999, () => console.log(`🚀 Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5001;
+app.listen(5001, () => console.log(`มาแล้วไอ้ไก่ ${PORT}`));

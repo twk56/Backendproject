@@ -15,6 +15,8 @@ router.post("/register", validateRegister, async (req, res) => {
   password = password.trim();
 
   let role = "user";
+  let isApproved = false;
+
   if (studentId === "adminkk") {
     role = "admin";
   }
@@ -32,11 +34,17 @@ router.post("/register", validateRegister, async (req, res) => {
     studentId,
     password: hashedPassword,
     role,
+    isApproved,
   });
 
   await newUser.save();
 
-  res.json({ message: "สมัครสมาชิกสำเร็จ" });
+  res.json({
+    message:
+      role === "admin"
+        ? "สมัครสมาชิกในฐานะแอดมินสำเร็จ"
+        : "สมัครสมาชิกสำเร็จ กรุณารอการอนุมัติจากแอดมิน",
+  });
 });
 
 router.post("/login", async (req, res) => {
@@ -48,6 +56,10 @@ router.post("/login", async (req, res) => {
   const user = await User.findOne({ studentId });
   if (!user) {
     return res.status(400).json({ error: "รหัสนักศึกษาหรือรหัสผ่านไม่ถูกต้อง" });
+  }
+  
+  if (!user.isApproved) {
+    return res.status(403).json({ error: "โปรดรอผู้ดูแลตรวจสอบบัญชีแล้วล็อคอินใหม่อีกครั้ง" });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
