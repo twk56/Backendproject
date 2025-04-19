@@ -3,7 +3,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const mongoose = require("mongoose");
-const { uploadImage } = require("../controllers/uploadController"); // หากมีการใช้ controller แยก แต่ในที่นี้ยังคงใช้ inline logic
+const { uploadImage } = require("../controllers/uploadController");
 const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
