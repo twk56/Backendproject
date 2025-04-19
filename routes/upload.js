@@ -1,7 +1,10 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 const mongoose = require("mongoose");
+const { uploadImage } = require("../controllers/uploadController"); // หากมีการใช้ controller แยก แต่ในที่นี้ยังคงใช้ inline logic
+const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -13,27 +16,44 @@ const imageSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const Image = mongoose.model("Image", imageSchema);
+const Image = mongoose.models.Image || mongoose.model("Image", imageSchema);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); 
+    const uploadDir = path.join(__dirname, "..", "uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+      console.log("Created uploads directory:", uploadDir);
+    }
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); 
+    const filename = Date.now() + path.extname(file.originalname);
+    console.log("Generated filename:", filename);
+    cb(null, filename);
   }
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("รองรับเฉพาะไฟล์รูปภาพเท่านั้น"));
+    }
+  },
+  limits: { fileSize: 5 * 1024 * 1024 }
+});
 
-router.post("/upload", upload.single("image"), async (req, res) => {
+router.post("/upload", verifyToken, upload.single("image"), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "กรุณาเลือกไฟล์" });
   }
   const imageUrl = `http://localhost:5001/uploads/${req.file.filename}`;
   
   try {
-    const fs = require("fs");
     const imageBuffer = fs.readFileSync(req.file.path);
     const base64Image = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
 
