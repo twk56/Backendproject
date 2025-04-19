@@ -51,7 +51,7 @@ router.post("/upload", verifyToken, upload.single("image"), async (req, res) => 
   if (!req.file) {
     return res.status(400).json({ error: "กรุณาเลือกไฟล์" });
   }
-  const imageUrl = `http://localhost:5001/uploads/${req.file.filename}`;
+  const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
   
   try {
     const imageBuffer = fs.readFileSync(req.file.path);
