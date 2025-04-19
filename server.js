@@ -28,7 +28,7 @@ startCronJobs();
 
 
 app.use(cors({
-  origin: 'https://cetwk.netlify.app/',
+  origin: 'https://cetwk.netlify.app',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -53,4 +53,4 @@ app.use("/api", authRoutes);
 app.use("/api", profileRoutes);
 
 const PORT = process.env.PORT || 5001;
-app.listen(5001, () => console.log(`มาแล้วไอ้ไก่ ${PORT}`));
+app.listen(PORT, () => console.log(`มาแล้วไอ้ไก่ ${PORT}`));
